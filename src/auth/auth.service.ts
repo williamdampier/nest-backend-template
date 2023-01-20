@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { HttpStatus } from '@nestjs/common/enums';
-import { HttpException } from '@nestjs/common/exceptions';
+import {
+  HttpException,
+  UnauthorizedException,
+} from '@nestjs/common/exceptions';
 import { JwtService } from '@nestjs/jwt/dist';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/user.model';
@@ -16,23 +19,25 @@ export class AuthService {
   ) {}
 
   async login(userDto: CreateUserDTO): Promise<Token> {
-    const user = await this.userService.getUserByEmail(userDto.email);
+    const user = await this.validateUser(userDto);
     return this.generateToken(user);
   }
 
   async registration(userDto: CreateUserDTO): Promise<Token> {
     const candidate = await this.userService.getUserByEmail(userDto.email);
-    if (candidate)
+    if (candidate) {
       throw new HttpException(
         'User with this email already exists',
         HttpStatus.BAD_REQUEST,
       );
-    const hashPassword = await bcrypt.hash(userDto.password, 10);
-    const user = await this.userService.createUser({
-      ...userDto,
-      password: hashPassword,
-    });
-    return this.generateToken(user);
+    } else {
+      const hashPassword = await bcrypt.hash(userDto.password, 10);
+      const user = await this.userService.createUser({
+        ...userDto,
+        password: hashPassword,
+      });
+      return this.generateToken(user);
+    }
   }
 
   async generateToken(user: User): Promise<Token> {
@@ -40,5 +45,18 @@ export class AuthService {
     return {
       token: this.jwtService.sign(payload),
     };
+  }
+
+  private async validateUser(userDto: CreateUserDTO) {
+    const user = await this.userService.getUserByEmail(userDto.email);
+    console.log(`User:${user}`);
+    const passwordEquals = await bcrypt.compare(
+      userDto.password,
+      user.password,
+    );
+    if (user && passwordEquals) {
+      return user;
+    }
+    throw new UnauthorizedException({ message: 'Incorrect email or password' });
   }
 }

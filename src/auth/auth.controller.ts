@@ -3,7 +3,6 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger/dist';
-import { User } from 'src/users/user.model';
 import { Token } from 'src/types';
 
 @ApiTags('Authorizartion')

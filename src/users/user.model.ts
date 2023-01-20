@@ -25,6 +25,7 @@ export class User extends Model<User, UserAttributes> {
     primaryKey: true,
   })
   id: number;
+
   @ApiProperty({
     example: 'qwerty123@email.com',
     description: 'Unique email address',
@@ -40,6 +41,7 @@ export class User extends Model<User, UserAttributes> {
   })
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
+
   @ApiProperty({
     example: 'true',
     description: 'Banned user or not',
@@ -47,6 +49,7 @@ export class User extends Model<User, UserAttributes> {
   })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   banned: boolean;
+
   @ApiProperty({
     example: 'Spam',
     description: 'User ban reason',
@@ -56,5 +59,5 @@ export class User extends Model<User, UserAttributes> {
   bannedReason: string;
 
   @BelongsToMany(() => Role, () => UserRoles)
-  roles: Role;
+  roles: Role[];
 }
