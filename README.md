@@ -21,6 +21,18 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## ENV variables example (.development.env and .production.env)
+
+PORT=7000 //Application port
+PG_HOST=postgres
+PG_PORT=5432
+PG_USERNAME=postgres
+PG_PASSWORD=postgresss
+PG_DATABASE=nest-test
+PRIVATE_KEY='JWT-Secret-KEY' //JWT Secret for signature
+
+Environment var is managed via cross-env (check package.json for script run details)
+
 ## Test
 
 ```bash
