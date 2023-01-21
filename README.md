@@ -21,6 +21,10 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## API docs
+
+http://<app url>/api/docs
+
 ## ENV variables example (.development.env and .production.env)
 
 PORT=7000 //Application port
